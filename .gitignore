@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Config files with sensitive data
+config/credentials.json
+config/token.json
+config/sync_state.json
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+*.log
+
+# Temporary files created during development
+*.tmp
+/tmp/
+
+# Icons and app files
+*.icns
+*.iconset/
+*.app/
+*.png
+
+# Development scripts
+list_calendars.py
+check_specific_event.py
+check_account.py
+get_user_info.py
+force_resync.py
