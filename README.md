@@ -29,28 +29,44 @@ python run.py --setup
 
 ## 사용법
 
-### 일회성 동기화
+⚠️ **중요**: 반드시 가상환경을 활성화한 후 실행하세요:
 ```bash
+source venv/bin/activate
+```
+
+### 간편 실행 (권장)
+```bash
+# 설정 확인
+./sync.sh setup
+
+# 한 번만 동기화
+./sync.sh sync
+
+# 지속적인 모니터링 (5분 간격)
+./sync.sh monitor
+
+# 지속적인 모니터링 (2분 간격)
+./sync.sh monitor 120
+
+# 조용한 모드로 동기화
+./sync.sh quiet
+```
+
+### 직접 실행
+```bash
+# 일회성 동기화
 python run.py --sync --quiet
-```
 
-### 지속적인 모니터링 (권장)
-```bash
+# 지속적인 모니터링 (권장)
 python run.py --monitor --quiet
-```
 
-### 백그라운드 실행
-```bash
+# 백그라운드 실행
 python start_daemon.py
-```
 
-### 모니터링 중지
-```bash
+# 모니터링 중지
 python stop_monitor.py
-```
 
-### 상태 확인
-```bash
+# 상태 확인
 python check_status.py
 ```
 

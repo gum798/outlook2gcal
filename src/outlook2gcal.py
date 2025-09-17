@@ -365,14 +365,33 @@ class GoogleSync:
             
             # Check if any event matches closely
             target_title = outlook_event['title']
-            
+            target_start = outlook_event['start_date']
+
             for event in events:
                 event_title = event.get('summary', '')
                 # Remove the 📧 prefix for comparison
                 clean_title = event_title.replace('📧 ', '')
-                
-                if clean_title == target_title:
-                    return event.get('id')  # Return Google event ID
+
+                # Get Google event start time
+                event_start_str = event.get('start', {}).get('dateTime', '')
+                if event_start_str:
+                    try:
+                        # Parse Google Calendar datetime (includes timezone)
+                        event_start = datetime.fromisoformat(event_start_str.replace('Z', '+00:00'))
+                        # Convert to local time for comparison
+                        if event_start.tzinfo:
+                            import zoneinfo
+                            local_tz = zoneinfo.ZoneInfo('Asia/Seoul')
+                            event_start = event_start.astimezone(local_tz).replace(tzinfo=None)
+
+                        # Check if title AND start time match
+                        time_diff = abs((target_start - event_start).total_seconds())
+                        if clean_title == target_title and time_diff < 300:  # Within 5 minutes
+                            return event.get('id')  # Return Google event ID
+                    except (ValueError, ImportError):
+                        # Fall back to title-only comparison if time parsing fails
+                        if clean_title == target_title:
+                            return event.get('id')
             
             return None
             
@@ -384,7 +403,7 @@ class GoogleSync:
         """Delete event from Google Calendar"""
         if not self.service:
             return False
-        
+
         try:
             self.service.events().delete(
                 calendarId=self.calendar_id,
@@ -392,8 +411,8 @@ class GoogleSync:
             ).execute()
             return True
         except HttpError as error:
-            if error.resp.status == 404:
-                # Event already deleted
+            if error.resp.status == 404 or error.resp.status == 410:
+                # Event already deleted (404) or resource has been deleted (410)
                 return True
             print(f'❌ Error deleting event: {error}')
             return False
